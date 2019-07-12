@@ -21,9 +21,11 @@ func main() {
 
 	client := slack.New(token, slack.OptionDebug(debug))
 
-	switch os.Args[1] {
+	switch command := os.Args[1]; command {
 	case "post_message":
 		postMessage(client, os.Args[2:])
+	default:
+		exit("Unknown command '" + command + "'")
 	}
 
 	os.Exit(0)
@@ -49,7 +51,7 @@ func postMessage(client *slack.Client, args []string) {
 	opts :=
 		[]slack.MsgOption{
 			slack.MsgOptionUsername("CircleCI"),
-			slack.MsgOptionText(*msg, true)}
+			slack.MsgOptionText(*msg, false)}
 
 	if *ts != "" {
 		opts = append(opts, slack.MsgOptionTS(*ts))
