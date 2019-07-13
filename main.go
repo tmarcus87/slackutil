@@ -33,6 +33,7 @@ func main() {
 
 func postMessage(client *slack.Client, args []string) {
 	f := flag.NewFlagSet("post_message", flag.ContinueOnError)
+	name := f.String("name", "SlackBot", "Name of bot")
 	ch := f.String("channel", "", "Channel")
 	msg := f.String("message", "", "Post message")
 	ts := f.String("thread", "", "Thread")
@@ -50,14 +51,12 @@ func postMessage(client *slack.Client, args []string) {
 
 	opts :=
 		[]slack.MsgOption{
-			slack.MsgOptionUsername("CircleCI"),
+			slack.MsgOptionUsername(*name),
 			slack.MsgOptionText(*msg, false)}
 
 	if *ts != "" {
 		opts = append(opts, slack.MsgOptionTS(*ts))
 	}
-
-	client.SendMessage(*ch)
 
 	respCh, respTs, respMsg, err := client.SendMessage(*ch, opts...)
 	if err != nil {
